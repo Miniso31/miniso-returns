@@ -2,13 +2,18 @@ from flask import Flask, render_template, request, redirect
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
+import json
+import os
 
 app = Flask(__name__)
 
+# Connect to Google Sheets via Environment Variable
 scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-creds = ServiceAccountCredentials.from_json_keyfile_name("flask-return-sheet-a3a04911591e.json", scope)
+creds_json = os.environ.get("GOOGLE_CREDS_JSON")
+creds_dict = json.loads(creds_json)
+creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
 client = gspread.authorize(creds)
-sheet = client.open("Amazon_Returns_Log").sheet1
+sheet = client.open("Amazon_Returns_Log").sheet1  # Replace with your actual Google Sheet name
 
 @app.route("/", methods=["GET", "POST"])
 def index():
