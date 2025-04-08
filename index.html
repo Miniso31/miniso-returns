@@ -1,73 +1,35 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Returns Dashboard</title>
+  <title>Returns Form</title>
 </head>
 <body>
-    <h1>Return Records</h1>
-    <a href="/add">➕ Add New Return</a> |
-    <a href="/download_excel">📥 Download Excel</a><br><br>
-
-    <form method="GET" action="/">
-        <label>Filter by Date:</label><br>
-        From: <input type="date" name="start_date">
-        To: <input type="date" name="end_date">
-        <input type="submit" value="Apply Filter">
-    </form>
-    <br>
-
-    {% if returns %}
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Action</th>
-            <th>Order ID</th>
-            <th>Barcode</th>
-            <th>SKU</th>
-            <th>Condition</th>
-            <th>Damage Description</th>
-            <th>Return Reason</th>
-            <th>Order Date</th>
-            <th>Price</th>
-            <th>LPN</th>
-            <th>Box Label</th>
-            <th>Warehouse</th>
-            <th>Staff</th>
-            <th>Platform</th>
-            <th>Images</th>
-            <th>Timestamp</th>
-        </tr>
-        {% for r in returns %}
-        <tr>
-            <td>
-                <form method="POST" action="/delete/{{ r[0] }}" onsubmit="return confirm('Are you sure you want to delete this return?');">
-                    <button type="submit">🗑️ Delete</button>
-                </form>
-            </td>
-            <td>{{ r[1] }}</td>
-            <td>{{ r[2] }}</td>
-            <td>{{ r[3] }}</td>
-            <td>{{ r[4] }}</td>
-            <td>{{ r[5] }}</td>
-            <td>{{ r[6] }}</td>
-            <td>{{ r[7] }}</td>
-            <td>{{ r[8] }}</td>
-            <td>{{ r[9] }}</td>
-            <td>{{ r[10] }}</td>
-            <td>{{ r[11] }}</td>
-            <td>{{ r[12] }}</td>
-            <td>{{ r[13] }}</td>
-            <td>
-                {% set imgs = r[14]|safe|loads %}
-                {% for img in imgs %}
-                    <img src="{{ url_for('static', filename='uploads/' + img) }}" width="60"><br>
-                {% endfor %}
-            </td>
-            <td>{{ r[15] }}</td>
-        </tr>
-        {% endfor %}
-    </table>
-    {% else %}
-        <p>No return records found for selected dates.</p>
-    {% endif %}
+  <h1>Return Entry</h1>
+  <form method="POST" enctype="multipart/form-data">
+    <label>Order ID: <input name="order_id"></label><br>
+    <label>Barcode: <input name="barcode"></label><br>
+    <label>SKU: <input name="sku"></label><br>
+    <label>Condition:
+      <select name="condition">
+        <option>Sellable</option>
+        <option>Damaged</option>
+      </select>
+    </label><br>
+    <label>Return Reason: <input name="return_reason"></label><br>
+    <label>Order Date: <input name="order_date" type="date"></label><br>
+    <label>Price: <input name="price" type="number" step="0.01"></label><br>
+    <label>LPN: <input name="lpn"></label><br>
+    <label>Box Label: <input name="box_label"></label><br>
+    <label>Warehouse: <input name="warehouse"></label><br>
+    <label>Staff: <input name="staff"></label><br>
+    <label>Platform:
+      <select name="platform">
+        <option>Amazon</option>
+        <option>Noon</option>
+      </select>
+    </label><br>
+    <label>Images: <input type="file" name="images" multiple></label><br><br>
+    <button type="submit">Submit Return</button>
+  </form>
 </body>
 </html>
