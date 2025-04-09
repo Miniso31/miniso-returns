@@ -1,47 +1,61 @@
-import os
-import json
-import datetime
-from flask import Flask, request, render_template, redirect
+from flask import Flask, render_template, request, redirect
 import gspread
+import json
+import os
 from oauth2client.service_account import ServiceAccountCredentials
 
 app = Flask(__name__)
 
-# Setup Google Sheets connection
-def get_gsheet():
-    scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-    creds_json = os.environ.get("GOOGLE_CREDS_JSON")
-    creds_dict = json.loads(creds_json)
-    creds = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
-    client = gspread.authorize(creds)
-    sheet = client.open("Amazon_Returns_Log").sheet1
-    return sheet
+# Load Google credentials from environment variable
+creds_dict = json.loads(os.environ['GOOGLE_CREDS_JSON'])
+
+scope = ['https://spreadsheets.google.com/feeds',
+         'https://www.googleapis.com/auth/drive']
+
+credentials = ServiceAccountCredentials.from_json_keyfile_dict(creds_dict, scope)
+client = gspread.authorize(credentials)
+
+# Open your Google Sheet by name
+sheet = client.open("Amazon_Returns_Log").sheet1
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        order_id = request.form.get('order_id')
-        barcode = request.form.get('barcode')
-        sku = request.form.get('sku')
-        condition = request.form.get('condition')
-        damage_desc = request.form.get('damage_desc') if condition == 'Damaged' else ''
-        return_reason = request.form.get('return_reason')
-        order_date = request.form.get('order_date')
-        price = request.form.get('price')
-        lpn = request.form.get('lpn')
-        box_label = request.form.get('box_label')
-        warehouse = request.form.get('warehouse')
-        staff = request.form.get('staff')
-        platform = request.form.get('platform')
+        order_id = request.form['order_id']
+        barcode = request.form['barcode']
+        sku = request.form['sku']
+        condition = request.form['condition']
+        damage_desc = request.form['damage_desc']
+        return_reason = request.form['return_reason']
+        order_date = request.form['order_date']
+        price = request.form['price']
+        lpn = request.form['lpn']
+        box_label = request.form['box_label']
+        warehouse = request.form['warehouse']
+        staff = request.form['staff']
+        platform = request.form['platform']
 
+        # Add the data to the Google Sheet
         data = [
-            order_id, barcode, sku, condition, damage_desc, return_reason,
-            order_date, price, lpn, box_label, warehouse, staff, platform,
-            str(datetime.datetime.now())
+            order_id,
+            barcode,
+            sku,
+            condition,
+            damage_desc,
+            return_reason,
+            order_date,
+            price,
+            lpn,
+            box_label,
+            warehouse,
+            staff,
+            platform
         ]
-
-        sheet = get_gsheet()
         sheet.append_row(data)
         return redirect('/')
-
     return render_template('index.html')
+
+# Required for Render to assign the port
+if __name__ == '__main__':
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
