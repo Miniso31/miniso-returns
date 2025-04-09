@@ -1,35 +1,52 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Returns Form</title>
+    <title>MINISO Return Form</title>
 </head>
 <body>
-  <h1>Return Entry</h1>
-  <form method="POST" enctype="multipart/form-data">
-    <label>Order ID: <input name="order_id"></label><br>
-    <label>Barcode: <input name="barcode"></label><br>
-    <label>SKU: <input name="sku"></label><br>
-    <label>Condition:
-      <select name="condition">
-        <option>Sellable</option>
-        <option>Damaged</option>
-      </select>
-    </label><br>
-    <label>Return Reason: <input name="return_reason"></label><br>
-    <label>Order Date: <input name="order_date" type="date"></label><br>
-    <label>Price: <input name="price" type="number" step="0.01"></label><br>
-    <label>LPN: <input name="lpn"></label><br>
-    <label>Box Label: <input name="box_label"></label><br>
-    <label>Warehouse: <input name="warehouse"></label><br>
-    <label>Staff: <input name="staff"></label><br>
-    <label>Platform:
-      <select name="platform">
-        <option>Amazon</option>
-        <option>Noon</option>
-      </select>
-    </label><br>
-    <label>Images: <input type="file" name="images" multiple></label><br><br>
-    <button type="submit">Submit Return</button>
-  </form>
+    <h2>Amazon Returns Form</h2>
+    <form method="POST" action="/" enctype="application/x-www-form-urlencoded">
+        <label>Order ID:</label><br>
+        <input type="text" name="order_id" required><br><br>
+
+        <label>Barcode:</label><br>
+        <input type="text" name="barcode"><br><br>
+
+        <label>SKU:</label><br>
+        <input type="text" name="sku"><br><br>
+
+        <label>Condition:</label><br>
+        <select name="condition" required>
+            <option value="New">New</option>
+            <option value="Used">Used</option>
+            <option value="Damaged">Damaged</option>
+        </select><br><br>
+
+        <label>Damage Description (if Damaged):</label><br>
+        <input type="text" name="damage_desc"><br><br>
+
+        <label>Return Reason:</label><br>
+        <input type="text" name="return_reason"><br><br>
+
+        <label>Order Date:</label><br>
+        <input type="date" name="order_date"><br><br>
+
+        <label>Price:</label><br>
+        <input type="number" step="0.01" name="price"><br><br>
+
+        <label>LPN:</label><br>
+        <input type="text" name="lpn"><br><br>
+
+        <label>Box Label:</label><br>
+        <input type="text" name="box_label"><br><br>
+
+        <label>Warehouse:</label><br>
+        <input type="text" name="warehouse"><br><br>
+
+        <label>Staff:</label><br>
+        <input type="text" name="staff"><br><br>
+
+        <input type="submit" value="Submit">
+    </form>
 </body>
 </html>
