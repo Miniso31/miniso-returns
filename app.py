@@ -1,25 +1,3 @@
-from flask import Flask, render_template, request, redirect
-import gspread
-import json
-import os
-from oauth2client.service_account import ServiceAccountCredentials
-
-app = Flask(__name__)
-
-# Google Sheets Setup
-scope = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/drive"]
-google_creds = json.loads(os.environ["GOOGLE_CREDS_JSON"])
-creds = ServiceAccountCredentials.from_json_keyfile_dict(google_creds, scope)
-client = gspread.authorize(creds)
-sheet = client.open("Amazon_Returns_Log").sheet1  # Make sure the name matches exactly
-
-@app.route("/", methods=["GET", "POST"])
-def index():
-    if request.method == "POST":
-        data = [
-            request.form.get("order_id", ""),
-            request.form.get("barcode", ""),
-            request.form.get("sku", ""),
 import os
 import json
 import datetime
@@ -56,12 +34,14 @@ def index():
         staff = request.form.get('staff')
         platform = request.form.get('platform')
 
-        sheet = get_gsheet()
-        sheet.append_row([
+        data = [
             order_id, barcode, sku, condition, damage_desc, return_reason,
             order_date, price, lpn, box_label, warehouse, staff, platform,
             str(datetime.datetime.now())
-        ])
+        ]
+
+        sheet = get_gsheet()
+        sheet.append_row(data)
         return redirect('/')
 
     return render_template('index.html')
